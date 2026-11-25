@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>首調練習(一)do re mi 跟唱 · 試用版</title>
+<style>
+  :root{--charcoal:#2E3A3F;--teal:#0B6E6E;--teal-bright:#2FBFAA;--gold:#E8A33D;--green:#33D17A;--paper:#EAF2F1;--muted:#8FA3A0;--danger:#E2685A;--dbg:#20313a;--card:#24333b;--line:#33505b;}
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--dbg);color:var(--paper);font-family:"Noto Sans TC","PingFang TC",-apple-system,sans-serif;line-height:1.65;}
+  .wrap{max-width:640px;margin:0 auto;padding:18px 14px 40px}
+  header{margin-bottom:14px}
+  .brand{font-size:12px;letter-spacing:2px;color:var(--teal-bright);font-weight:700}
+  h1{font-size:22px;margin:6px 0 4px}
+  .en{font-size:12px;letter-spacing:2.5px;color:var(--muted);font-weight:600}
+  .badge{display:inline-block;margin-top:8px;font-size:12px;color:var(--gold);border:1px solid var(--gold);border-radius:20px;padding:3px 12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+  h2{font-size:16px;margin:0 0 8px;color:var(--teal-bright);letter-spacing:1px}
+  .note{font-size:13.5px;color:#cfe0dd;margin:8px 0}
+  .cap{font-size:12px;color:var(--muted);margin:8px 0 4px}
+  .cap.grp{font-weight:700;color:var(--paper);margin-top:12px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .btn{font-family:inherit;font-size:15px;border-radius:10px;border:1.5px solid var(--line);background:#2b3f4a;color:var(--paper);padding:9px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btn.pri{background:var(--teal);border-color:var(--teal)}
+  .btn.tealt{background:var(--teal-bright);border-color:var(--teal-bright);color:#0d1f1d;font-weight:700}
+  .btn.ch.sel{border-color:var(--teal-bright);background:#1e4f4a}
+  .btn.bok{background:var(--green);border-color:var(--green);color:#0d1f1d}
+  .btn.bbad{background:var(--danger);border-color:var(--danger);color:#2b1210}
+  .btn.bok:disabled,.btn.bbad:disabled{opacity:1}
+  .choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+  #score{font-size:14px;font-weight:600;line-height:1.7;margin:2px 0 8px}
+  .mel{display:flex;gap:10px;justify-content:center;margin:10px 0;min-height:52px;align-items:center}
+  .syl{font-size:22px;font-weight:700;min-width:44px;text-align:center;padding:6px 8px;border-radius:10px;border:1.5px solid var(--line)}
+  .syl.cur{border-color:var(--teal-bright);color:var(--teal-bright);background:#1e4f4a}
+  .syl.ok{border-color:var(--green);color:var(--green)}
+  .syl.bad{border-color:var(--danger);color:var(--danger)}
+  .syl.unknown{color:var(--muted)}
+  .syl.skip{border-style:dashed;color:var(--muted)}
+  .pitchbar{height:8px;background:#1a2a32;border-radius:4px;position:relative;margin:6px 0;overflow:hidden}
+  .pitchbar>i{position:absolute;top:0;bottom:0;width:6px;background:var(--muted);border-radius:3px;left:50%;transition:left .08s}
+  .pitchread{font-size:12px;color:var(--muted);text-align:center;min-height:18px}
+  .verdict{font-size:15px;line-height:1.6;margin:8px 0}
+  .tok{color:var(--green)}
+  .tbad{color:var(--danger)}
+  .slots{display:flex;gap:8px;justify-content:center;margin:8px 0}
+  .slot{width:44px;height:44px;border-radius:10px;border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--muted)}
+  .slot.fill{border-style:solid;color:var(--paper)}
+  .slot.ok{border-color:var(--green);color:var(--green)}
+  .slot.bad{border-color:var(--danger);color:var(--danger)}
+  .cele{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .cele-piece{position:absolute;top:-14px;animation:cele-fall linear forwards}
+  @keyframes cele-fall{to{transform:translateY(var(--fall,700px)) rotate(540deg);opacity:.9}}
+  footer{margin-top:18px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.7}
+  footer a{color:inherit}
+  .big{font-size:34px;font-weight:800;text-align:center;margin:6px 0}
+  @media (min-width:900px){.wrap{max-width:720px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">TCMC · 首調 SOLFÈGE</div>
+    <h1>首調練習(一)do re mi 跟唱</h1>
+    <div class="en">MOVABLE DO: DO RE MI ECHO · TRIAL</div>
+    <span class="badge">試用版 · 8 題小關 · 需要麥克風</span>
+  </header>
+
+  <div class="card">
+    <h2>這一頁練什麼</h2>
+    <div class="note">練「聽到旋律,用首調唱回來」。先給主音和弦,讓耳朵找到 do;再播一段只用 do re mi 三個音的短旋律,你把整句一次唱回,手機判斷每個音準不準,並播一次正確旋律讓你對照。</div>
+    <div class="note">兩個階段。<b>一、跟唱</b>:看著唱名跟著唱;<b>二、自己唱</b>:唱名收起來,唱完再指出剛才唱的是哪幾個音。</div>
+    <div class="note">下方設定可選男聲或女聲示範(音域不同;你用自己舒服的八度唱都算對),以及十二個調的起音。勾選「每題換一個起音」,答完一題自動換調,避免記住固定音高。</div>
+    <div class="note">每題都可不限次重聽、重唱,沒有時間壓力;唱對有獎勵,唱不準會告訴你差在哪,可以再試。節奏不評分,照自己的速度唱。同音反覆(如 do do)連著唱時,系統只判斷音的順序與準不準,分不出唱了一個長音還是兩個音。</div>
+  </div>
+
+  <div class="card">
+    <h2>設定與成績</h2>
+    <div class="cap grp">示範聲部</div>
+    <div class="controls">
+      <button type="button" class="btn ch sel" id="vof">女聲</button>
+      <button type="button" class="btn ch" id="vom">男聲</button>
+    </div>
+    <div class="cap grp">起音(do 的高度,十二個調)</div>
+    <div class="controls" id="keys"></div>
+    <div class="cap"><label style="cursor:pointer"><input type="checkbox" id="autokey"> 每題換一個起音(答完一題自動換調)</label></div>
+    <div class="cap grp">階段</div>
+    <div class="controls">
+      <button type="button" class="btn ch sel" id="st1">一、跟唱</button>
+      <button type="button" class="btn ch" id="st2">二、自己唱</button>
+    </div>
+    <div class="cap grp">成績</div>
+    <div id="score">已唱 0 / 8 題,唱準 0 題。</div>
+    <div class="controls"><button type="button" class="btn" id="reset">全部重來</button></div>
+  </div>
+
+  <div class="card" id="qcard">
+    <h2 id="qtitle">第 1 題</h2>
+    <div class="cap" id="qhint">先按播放,聽主音和弦和示範旋律,再按「開始唱」。</div>
+    <div class="controls">
+      <button type="button" class="btn pri" id="play">▶ 播放主音與旋律</button>
+      <button type="button" class="btn tealt" id="sing" disabled>開始唱</button>
+    </div>
+    <div class="mel" id="mel"></div>
+    <div class="pitchread" id="pread"></div>
+    <div class="pitchbar"><i id="pbar"></i></div>
+    <div class="controls" id="singctl" hidden>
+      <button type="button" class="btn" id="stopsing">停止重唱</button>
+    </div>
+    <div class="cap" id="singcap" hidden>把整句一次唱完,中間不會有提示音;唱完按「唱完了」,會播一次正確旋律讓你對照。圓點:綠色是準、紅色是偏低或偏高(左低右高)、灰色是沒聽到聲音。</div>
+    <div id="idarea" hidden>
+      <div class="cap grp">剛才唱的是哪幾個音?依序點唱名</div>
+      <div class="slots" id="slots"></div>
+      <div class="choices">
+        <button type="button" class="btn ch" data-s="do">do</button>
+        <button type="button" class="btn ch" data-s="re">re</button>
+        <button type="button" class="btn ch" data-s="mi">mi</button>
+      </div>
+    </div>
+    <div class="verdict" id="fb"></div>
+    <div class="controls"><button type="button" class="btn pri" id="next" hidden>下一題</button></div>
+  </div>
+
+  <div class="card" id="sumcard" hidden>
+    <h2>總講評</h2>
+    <div class="note" id="sumtext"></div>
+    <div class="controls"><button type="button" class="btn pri" id="reset2">全部重來</button></div>
+  </div>
+
+  <footer>
+    <span>首調練習(一)do re mi 跟唱 · 試用版 Movable-Do Echo Trial</span><br>
+    <span>台灣合唱音樂中心 TCMC 製作 · © 2026 朱元雷 Ray Chu · <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hant">CC BY-NC 4.0</a></span>
+  </footer>
+</div>
+
+<script>
+// ---------- audio out ----------
+const FREQ = {
+  C3: 130.813, Cs3: 138.591, D3: 146.832, Eb3: 155.563, E3: 164.814,
+  F3: 174.614, Fs3: 184.997, G3: 196.0,
+  Ab3: 207.652, A3: 220, Bb3: 233.082, B3: 246.942,
+  C4: 261.626, Cs4: 277.183, D4: 293.665, Eb4: 311.127, E4: 329.628,
+  F4: 349.228, Fs4: 369.994, G4: 391.996, Gs4: 415.305, Ab4: 415.305, A4: 440, Bb4: 466.164, B4: 493.883,
+  C5: 523.251, Cs5: 554.365, D5: 587.330, Eb5: 622.254, E5: 659.255, F5: 698.456, Fs5: 739.990, Gb5: 739.990
+};
+// twelve keys; note ids computed per voice octave (female 4, male 3)
+const NAMES = ['C', 'Cs', 'D', 'Eb', 'E', 'F', 'Fs', 'G', 'Ab', 'A', 'Bb', 'B'];
+const KEY_LABELS = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
+const VOICES = { female: { label: '女聲', oct: 4 }, male: { label: '男聲', oct: 3 } };
+function noteAt(i, oct) { return NAMES[i % 12] + (oct + Math.floor(i / 12)); }
+function keyNotes(k, oct) { return [noteAt(k, oct), noteAt(k + 2, oct), noteAt(k + 4, oct)]; }   // do re mi
+function chordNotes(k, oct) { return [noteAt(k, oct), noteAt(k + 4, oct), noteAt(k + 7, oct)]; } // do mi sol
+const SOL = ['do', 're', 'mi'];
+const ITEMS = [
+  [0, 1, 2], [2, 1, 0], [0, 2, 1, 0], [1, 2, 1, 0],
+  [0, 0, 1, 2], [2, 2, 1, 0], [0, 1, 2, 1, 0], [2, 1, 0, 1, 0]
+];
+
+let ac = null;
+function audioCtx() {
+  if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (ac.state === 'suspended') void ac.resume();
+  return ac;
+}
+function tone(freq, t, dur, amp) {
+  const c = audioCtx();
+  const g = c.createGain();
+  g.gain.setValueAtTime(1e-4, t);
+  g.gain.exponentialRampToValueAtTime(amp, t + 0.015);
+  g.gain.setTargetAtTime(amp * 0.75, t + 0.015, Math.max(dur / 3, 0.03));
+  g.gain.setTargetAtTime(1e-4, t + Math.max(dur - 0.06, 0.02), 0.018);
+  g.connect(c.destination);
+  [[1, 1], [2, 0.4], [3, 0.15]].forEach(([m, a]) => {
+    const o = c.createOscillator();
+    o.type = 'sine'; o.frequency.value = freq * m;
+    const og = c.createGain(); og.gain.value = a / 1.55;
+    o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.15);
+  });
+}
+function playChord(t, dur) {
+  chordNotes(keyIdx, VOICES[voice].oct).forEach((n, i) => tone(FREQ[n], t, dur, i === 0 ? 0.32 : 0.26));
+}
+function playItem(withChord) {
+  const c = audioCtx();
+  const t0 = c.currentTime + 0.1;
+  const mel = itemKey.map(k => FREQ[k]);
+  let cur = t0;
+  if (withChord) {
+    playChord(t0, 1.6);
+    cur = t0 + 2.2;
+  }
+  mel.forEach((f, i) => { tone(f, cur, i === mel.length - 1 ? 1 : 0.55, 0.55); cur += i === mel.length - 1 ? 1 : 0.55; });
+  return (cur - t0) + 0.6;
+}
+
+// ---------- pitch detection ----------
+function autoCorrelate(buf, sampleRate) {
+  let SIZE = buf.length;
+  let rms = 0;
+  for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
+  rms = Math.sqrt(rms / SIZE);
+  if (rms < 0.012) return -1;
+  let r1 = 0, r2 = SIZE - 1;
+  const thres = 0.2;
+  for (let i = 0; i < SIZE / 2; i++) { if (Math.abs(buf[i]) < thres) { r1 = i; break; } }
+  for (let i = 1; i < SIZE / 2; i++) { if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; } }
+  buf = buf.slice(r1, r2);
+  SIZE = buf.length;
+  if (SIZE < 64) return -1;
+  const c = new Array(SIZE).fill(0);
+  for (let i = 0; i < SIZE; i++) for (let j = 0; j < SIZE - i; j++) c[i] += buf[j] * buf[j + i];
+  let d = 0;
+  while (d < SIZE - 1 && c[d] > c[d + 1]) d++;
+  let maxval = -1, maxpos = -1;
+  for (let i = d; i < SIZE; i++) { if (c[i] > maxval) { maxval = c[i]; maxpos = i; } }
+  let T0 = maxpos;
+  if (T0 <= 0 || T0 >= SIZE - 1) return -1;
+  const x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+  const a = (x1 + x3 - 2 * x2) / 2, bq = (x3 - x1) / 2;
+  if (a) T0 = T0 - bq / (2 * a);
+  return sampleRate / T0;
+}
+function centsOff(freq, target) { return 1200 * Math.log2(freq / target); }
+
+// ---------- mic ----------
+let micStream = null, analyser = null, micBuf = null;
+async function ensureMic() {
+  if (micStream) return true;
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    const src = audioCtx().createMediaStreamSource(micStream);
+    analyser = audioCtx().createAnalyser();
+    analyser.fftSize = 2048;
+    src.connect(analyser);
+    micBuf = new Float32Array(analyser.fftSize);
+    return true;
+  } catch (e) { return false; }
+}
+function readPitch() {
+  if (!analyser) return -1;
+  analyser.getFloatTimeDomainData(micBuf);
+  return autoCorrelate(micBuf, audioCtx().sampleRate);
+}
+
+// ---------- app ----------
+const $ = id => document.getElementById(id);
+let keyIdx = 0;          // 0..11 into KEY_LABELS
+let voice = 'female';  // 'female' | 'male'
+let stage = 1;
+let itemIdx = 0;
+let itemKey = [];      // note names for current item
+let results = [];      // per item: true/false
+let points = 0;
+let singing = false;
+let idPicks = [];
+let lastSangOk = null;   // null = 未唱; true/false = 上一輪唱的结果
+
+function markKeys() { document.querySelectorAll('#keys .btn').forEach(x => x.classList.toggle('sel', Number(x.dataset.k) === keyIdx)); }
+KEY_LABELS.forEach((label, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn ch' + (i === keyIdx ? ' sel' : ''); b.textContent = label; b.dataset.k = i;
+  b.onclick = () => { keyIdx = i; markKeys(); renderMel(); };
+  $('keys').appendChild(b);
+});
+function setVoice(v) {
+  voice = v;
+  $('vof').classList.toggle('sel', v === 'female');
+  $('vom').classList.toggle('sel', v === 'male');
+  renderMel();
+}
+$('vof').onclick = () => setVoice('female');
+$('vom').onclick = () => setVoice('male');
+
+function setStage(v) {
+  stage = v;
+  [1, 2].forEach(n => $('st' + n).classList.toggle('sel', n === v));
+  resetItems(false);
+}
+[1, 2].forEach(n => { $('st' + n).onclick = () => setStage(n); });
+
+function updateScore() {
+  const done = results.length, ok = results.filter(Boolean).length;
+  $('score').textContent = done < ITEMS.length
+    ? `已唱 ${done} / ${ITEMS.length} 題,唱準 ${ok} 題。`
+    : `唱準 ${ok} / ${ITEMS.length} 題。`;
+}
+
+function renderMel() {
+  const m = ITEMS[itemIdx];
+  itemKey = m.map(d => keyNotes(keyIdx, VOICES[voice].oct)[d]);
+  const show = stage === 1;
+  $('mel').innerHTML = m.map(d => `<span class="syl${show ? '' : ' unknown'}" data-d="${d}">${show ? SOL[d] : '?'}</span>`).join('');
+  $('fb').innerHTML = '';
+  $('pread').textContent = '';
+  $('next').hidden = true;
+  $('sing').disabled = false;
+  $('play').disabled = false;
+  $('idarea').hidden = true;
+  idPicks = [];
+  lastSangOk = null;
+  lastHeard = '';
+  renderSlots(m.length);
+  $('qtitle').textContent = `第 ${itemIdx + 1} 題`;
+  $('qhint').textContent = stage === 1
+    ? '先按播放,聽主音和弦和示範旋律,看著唱名跟著唱。'
+    : '唱名收起來了。聽完旋律,憑記憶唱回來,再指出是哪幾個音。';
+}
+function renderSlots(n) {
+  $('slots').innerHTML = Array.from({ length: n }, () => '<span class="slot">·</span>').join('');
+}
+
+function miniCelebrate() {
+  const colors = ['#73A89A', '#C96F5E', '#7E9CC9', '#B58AC9', '#5E8C6A', '#D97B9C'];
+  const el = document.createElement('div');
+  el.className = 'cele'; el.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < 22; i++) {
+    const r = (k) => { const x = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
+    const p = document.createElement('span');
+    p.className = 'cele-piece';
+    const size = 6 + r(4) * 7, round = r(6) > 0.5;
+    p.style.left = (r(1) * 100) + '%';
+    p.style.width = size + 'px';
+    p.style.height = (round ? size : size * 0.55) + 'px';
+    p.style.background = colors[Math.floor(r(5) * colors.length)];
+    p.style.borderRadius = round ? '50%' : '2px';
+    p.style.animationDelay = (r(2) * 0.9) + 's';
+    p.style.animationDuration = (1.4 + r(3) * 0.9) + 's';
+    p.style.setProperty('--fall', (Math.min(window.innerHeight * 0.5, 480) * (0.6 + r(7) * 0.5)) + 'px');
+    el.appendChild(p);
+  }
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2400);
+}
+function ding(ok, delay) {
+  const c = audioCtx(), t = c.currentTime + 0.02 + (delay || 0);
+  if (ok) { tone(523.251, t, 0.35, 0.4); tone(783.991, t + 0.12, 0.5, 0.4); }
+  else tone(196, t, 0.4, 0.3);
+}
+
+// continuous phrase singing: record the whole phrase, judge after 「唱完了」, then replay the correct melody for comparison
+const TOL = 30;         // cents, per sung-note average; ±30 是 Ray 同意的試用起點(設計判斷,非驗證過的教學標準)
+let sess = null;        // recording session
+let lastHeard = '';     // chips html of the last analyzed phrase
+
+function nearestDegreeOff(f, doF) {
+  const c = 1200 * Math.log2(f / doF);
+  const pc = ((c % 1200) + 1200) % 1200;
+  const cands = [[0, 0], [200, 1], [400, 2], [1200, 0]];
+  let best = 0, deg = 0, bd = 1e9;
+  for (const [cd, dg] of cands) { const d = Math.abs(pc - cd); if (d < bd) { bd = d; best = cd; deg = dg; } }
+  let off = pc - best; if (off > 600) off -= 1200; if (off < -600) off += 1200;
+  return { deg: Math.abs(off) >= 50 ? -1 : deg, off };   // past half a semitone it belongs to neither do/re/mi: unknown
+}
+
+function analyze(samples, doF) {
+  const segs = [];
+  let cur = null, lastVoicedT = -1e9;
+  for (const smp of samples) {
+    if (smp.f <= 0) continue;
+    const { deg, off } = nearestDegreeOff(smp.f, doF);
+    if (cur && deg === cur.deg && smp.t - lastVoicedT < 150) { cur.n++; cur.sum += off; cur.dur = smp.t - cur.t0; }
+    else { if (cur) segs.push(cur); cur = { deg, sum: off, n: 1, t0: smp.t, dur: 0 }; }
+    lastVoicedT = smp.t;
+  }
+  if (cur) segs.push(cur);
+  return segs.filter(g => g.dur >= 70 || g.n >= 5).map(g => ({ deg: g.deg, off: g.sum / g.n }));
+}
+
+function heardChips(segs) {
+  const chips = segs.map(g => `<span class="syl ${g.deg >= 0 && Math.abs(g.off) <= TOL ? 'ok' : 'bad'}" style="font-size:15px;min-width:32px;padding:3px 6px">${g.deg >= 0 ? SOL[g.deg] : '?'}</span>`).join('');
+  return `<div class="cap">聽起來是:</div><div class="mel" style="min-height:0;margin:6px 0">${chips}</div>`;
+}
+
+function replayDemo() {
+  const secs = playItem(false);   // 句後對照:只回放旋律
+  $('play').disabled = true;
+  setTimeout(() => { $('play').disabled = false; }, secs * 1000);
+}
+
+function singGuided() {
+  if (singing) { finishSing(); return; }
+  ensureMic().then(okMic => {
+    if (!okMic) {
+      $('fb').innerHTML = '<span class="tbad"><strong>讀不到麥克風。</strong></span><span class="cap">請允許麥克風權限再試;或改用聽辨:播放後依序點出你聽到的唱名。</span>';
+      [...$('mel').children].forEach(el => { el.textContent = '?'; el.classList.add('unknown'); });
+      $('idarea').hidden = false;
+      return;
+    }
+    singing = true;
+    $('sing').textContent = '唱完了';
+    $('play').disabled = true;
+    $('fb').innerHTML = '';
+    [...$('mel').children].forEach((el, i) => {
+      el.textContent = stage === 1 ? SOL[ITEMS[itemIdx][i]] : '?';
+      el.className = 'syl' + (stage === 1 ? '' : ' unknown');
+    });
+    idPicks = [];
+    renderSlots(ITEMS[itemIdx].length);
+    $('idarea').hidden = true;
+    $('singctl').hidden = false;
+    $('singcap').hidden = false;
+    $('pread').textContent = '';
+    sess = { samples: [], doF: FREQ[noteAt(keyIdx, VOICES[voice].oct)], raf: 0 };
+    loop();
+  });
+}
+
+function loop() {
+  if (!sess) return;
+  const f = readPitch();
+  sess.samples.push({ t: performance.now(), f });
+  if (f > 0) {
+    const { off } = nearestDegreeOff(f, sess.doF);
+    $('pbar').style.left = Math.max(2, Math.min(98, 50 + off / 2)) + '%';
+    $('pbar').style.background = Math.abs(off) <= TOL ? 'var(--green)' : 'var(--danger)';
+  } else {
+    $('pbar').style.background = 'var(--muted)';
+  }
+  sess.raf = requestAnimationFrame(loop);
+}
+
+function finishSing() {
+  const cur = sess;
+  if (!cur) return;
+  singing = false;
+  cancelAnimationFrame(cur.raf);
+  sess = null;
+  $('sing').textContent = '開始唱';
+  $('singctl').hidden = true;
+  $('singcap').hidden = true;
+  $('pbar').style.background = 'var(--muted)';
+  const segs = analyze(cur.samples, cur.doF);
+  if (!segs.length) {
+    $('fb').innerHTML = '<span class="tbad"><strong>沒聽到聲音。</strong></span><span class="cap">再試一次,麥克風靠近一點;這次不計入成績。</span>';
+    $('play').disabled = false;
+    return;
+  }
+  const target = ITEMS[itemIdx];
+  const collapse = a => a.filter((x, i) => i === 0 || x !== a[i - 1]);
+  const orderOk = collapse(segs.map(g => g.deg)).join(',') === collapse(target).join(',');
+  const tuneOk = segs.every(g => g.deg >= 0 && Math.abs(g.off) <= TOL);
+  const allOk = orderOk && tuneOk;
+  lastSangOk = allOk;
+  lastHeard = heardChips(segs);
+  const hint = orderOk ? '音的順序對了,紅色的音再唱準一點。' : '順序或音不太對;聽聽剛播的正確旋律,再唱一次。';
+  if (stage >= 2) {
+    // 自己唱:先答唱名,再給判定與回放對照,避免提示洩漏答案
+    $('fb').innerHTML = '<span class="cap">唱完了。先指出剛才唱的唱名,再看判定並對照正確旋律。</span>';
+    $('idarea').hidden = false;
+    $('sing').disabled = false;
+    $('play').disabled = false;
+  } else {
+    closeItem(allOk, hint, lastHeard);
+    replayDemo();
+  }
+}
+
+$('stopsing').onclick = () => {
+  if (!sess) return;
+  cancelAnimationFrame(sess.raf);
+  sess = null;
+  singing = false;
+  $('sing').textContent = '開始唱';
+  $('singctl').hidden = true;
+  $('singcap').hidden = true;
+  $('pbar').style.background = 'var(--muted)';
+  renderMel();
+};
+
+// syllable identification
+document.querySelectorAll('#idarea .choices .btn').forEach(b => {
+  b.onclick = () => {
+    if (idPicks.length >= ITEMS[itemIdx].length) return;
+    idPicks.push(b.dataset.s);
+    const slots = [...$('slots').children];
+    slots[idPicks.length - 1].textContent = b.dataset.s;
+    slots[idPicks.length - 1].classList.add('fill');
+    if (idPicks.length === ITEMS[itemIdx].length) {
+      const target = ITEMS[itemIdx].map(d => SOL[d]).join(',');
+      const ok = idPicks.join(',') === target;
+      idPicks.forEach((s, i) => slots[i].classList.add(s === SOL[ITEMS[itemIdx][i]] ? 'ok' : 'bad'));
+      const final = ok && lastSangOk !== false;
+      closeItem(final, ok ? '唱名對了,但音準再穩一點;再聽再唱一次。' : '唱名再對一次:聽聽看每個音是 do、re 還是 mi。', lastHeard);
+      replayDemo();
+    }
+  };
+});
+
+function closeItem(ok, hintIfBad, extraHtml) {
+  results.push(ok);
+  if (ok) { points++; miniCelebrate(); ding(true); }
+  updateScore();
+  const done = results.length, okN = results.filter(Boolean).length;
+  const lit = okN > 0 && okN % 5 === 0 ? 5 : okN % 5;
+  $('fb').innerHTML = (ok
+    ? `<span class="tok"><strong>答對了!</strong></span>`
+    : `<span class="tbad"><strong>沒關係,</strong></span><span class="cap">${hintIfBad}</span>`)
+    + (extraHtml || '')
+    + `<div class="cap">目前唱準 ${okN} 題 / 已唱 ${done} 題。集點 ${'●'.repeat(lit)}${'○'.repeat(5 - lit)}</div>`;
+  $('next').hidden = itemIdx >= ITEMS.length - 1;
+  $('sing').disabled = true;
+  if (done === ITEMS.length) {
+    const okAll = results.filter(Boolean).length;
+    $('sumtext').textContent = okAll === ITEMS.length
+      ? '8 題全對!do re mi 已經長在耳朵裡,可以往下加 sol la。'
+      : okAll >= 5
+        ? `唱準 ${okAll} / 8 題,已經過半;沒準的幾題重聽重唱一次會更穩。`
+        : `唱準 ${okAll} / 8 題,先回到階段一,多跟唱幾次讓耳朵先記住,再挑戰自己唱。`;
+    setTimeout(() => { $('sumcard').hidden = false; $('sumcard').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400);
+  }
+}
+
+$('play').onclick = () => {
+  const secs = playItem(true);
+  $('play').disabled = true;
+  setTimeout(() => { $('play').disabled = false; }, secs * 1000);
+};
+$('sing').onclick = singGuided;
+$('next').onclick = () => {
+  if (itemIdx < ITEMS.length - 1) {
+    itemIdx++;
+    if ($('autokey').checked) {
+      const others = [...Array(12).keys()].filter(i => i !== keyIdx);
+      keyIdx = others[Math.floor(Math.random() * others.length)];
+      markKeys();
+    }
+    renderMel();
+  }
+};
+function resetItems(resetKey) {
+  itemIdx = 0;
+  results = [];
+  points = 0;
+  singing = false;
+  if (resetKey) { keyIdx = 0; markKeys(); }
+  $('sumcard').hidden = true;
+  updateScore();
+  renderMel();
+}
+$('reset').onclick = () => resetItems(true);
+$('reset2').onclick = () => resetItems(true);
+
+resetItems(true);
+</script>
+</body>
+</html>
